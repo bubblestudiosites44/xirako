@@ -1,14 +1,51 @@
 <!doctype html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.json" />
-    <title>Xirako</title>
+
+```
+<!-- SEO: Add a description -->
+<meta name="description" content="Xirako is the home of BeamPD. Explore projects, tools, and more." />
+
+<link rel="manifest" href="/manifest.json" />
+<title>Xirako | Home of BeamPD</title>
+
+<!-- Structured Data (Improved) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Xirako",
+  "url": "https://xirako.com",
+  "logo": "https://base44.com/logo_v2.svg",
+  "sameAs": [
+    "https://twitter.com/yourhandle",
+    "https://github.com/yourhandle",
+    "https://youtube.com/@yourchannel"
+  ]
+}
+</script>
+```
+
   </head>
+
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+
+```
+<!-- Visible footer (SEO-safe + useful) -->
+<footer style="text-align:center; padding:20px; font-size:14px;">
+  <p>
+    Visit our main project:
+    <a href="https://xirako.com" title="BeamPD Home">BeamPD</a>
+  </p>
+</footer>
+
+<script type="module" src="/src/main.jsx"></script>
+```
+
   </body>
 </html>
