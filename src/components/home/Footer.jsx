@@ -25,6 +25,12 @@ export default function Footer() {
             <p className="max-w-sm font-body text-sm leading-relaxed text-white/66">
               Designing tools that feel cohesive across every touchpoint, from discovery to execution.
             </p>
+            <a
+              href="mailto:support@xirako.com"
+              className="mt-3 inline-block font-body text-sm text-primary transition-colors hover:text-white"
+            >
+              support@xirako.com
+            </a>
           </div>
 
           <div className="flex flex-wrap gap-x-6 gap-y-3 md:justify-end">

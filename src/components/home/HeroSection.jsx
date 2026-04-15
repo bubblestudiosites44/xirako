@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import Navbar from "./Navbar";
+import { Link } from "react-router-dom";
 
 export default function HeroSection() {
   return (
@@ -51,18 +52,18 @@ export default function HeroSection() {
             transition={{ duration: 0.65, delay: 0.65 }}
             className="mt-9 flex flex-wrap items-center gap-3"
           >
-            <a
-              href="#products"
+            <Link
+              to="/projects"
               className="rounded-full border border-primary/60 bg-primary/90 px-6 py-3 font-body text-xs font-semibold uppercase tracking-[0.14em] text-[#02251f] transition-transform duration-200 hover:-translate-y-0.5"
             >
               Explore Products
-            </a>
-            <a
-              href="https://xirako.com"
+            </Link>
+            <Link
+              to="/about"
               className="rounded-full border border-white/20 bg-white/[0.07] px-6 py-3 font-body text-xs font-medium uppercase tracking-[0.14em] text-white/84 transition-colors duration-200 hover:bg-white/[0.14]"
             >
               About Xirako
-            </a>
+            </Link>
           </motion.div>
         </div>
 
