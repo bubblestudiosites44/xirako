@@ -10,27 +10,31 @@ const links = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border/50 bg-card/40 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-6 py-12 sm:py-16">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+    <footer className="px-3 pb-4 pt-2 sm:px-5 lg:px-7">
+      <div className="mx-auto max-w-[1600px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#030506] px-6 py-12 shadow-[0_25px_80px_rgba(0,0,0,0.52)] sm:px-10 sm:py-14">
+        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <img src="https://media.base44.com/images/public/69d2dc7d58d5d0f867c281d2/b2ef9950c_Xirako.png" alt="Xirako" className="w-7 h-7 object-contain" />
-              <span className="font-heading font-bold text-lg text-foreground tracking-tight">Xirako</span>
+            <div className="mb-3 flex items-center gap-2.5">
+              <img
+                src="https://media.base44.com/images/public/69d2dc7d58d5d0f867c281d2/b2ef9950c_Xirako.png"
+                alt="Xirako"
+                className="h-7 w-7 object-contain"
+              />
+              <span className="font-heading text-lg font-semibold tracking-[-0.02em] text-white">Xirako</span>
             </div>
-            <p className="font-body text-sm text-muted-foreground max-w-xs">
-              Building powerful software for the modern web. One platform, endless possibilities.
+            <p className="max-w-sm font-body text-sm leading-relaxed text-white/66">
+              Designing tools that feel cohesive across every touchpoint, from discovery to execution.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-x-8 gap-y-3">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 md:justify-end">
             {links.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="font-body text-sm text-white/62 transition-colors hover:text-white"
               >
                 {link.label}
               </a>
@@ -38,13 +42,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="font-body text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Xirako. All rights reserved.
+        <div className="mt-11 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-7 sm:flex-row">
+          <span className="font-body text-xs uppercase tracking-[0.14em] text-white/48">
+            Copyright {new Date().getFullYear()} Xirako. All rights reserved.
           </span>
-          <span className="font-body text-xs text-muted-foreground">
-            xirako.com
-          </span>
+          <span className="font-body text-xs uppercase tracking-[0.14em] text-white/48">xirako.com</span>
         </div>
       </div>
     </footer>
