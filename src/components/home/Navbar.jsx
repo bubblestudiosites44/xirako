@@ -2,8 +2,10 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import AccountMenu from "./AccountMenu";
 
 const links = [
+  { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Services", to: "/services" },
   { label: "Projects", to: "/projects" },
@@ -23,11 +25,12 @@ export default function Navbar() {
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.1 }}
-      className="absolute left-4 right-4 top-4 z-30 flex items-start justify-between gap-3 sm:left-7 sm:right-7 sm:top-7 lg:left-10 lg:right-10"
+      className="absolute left-4 right-4 top-4 z-30 flex items-center justify-between gap-3 sm:left-7 sm:right-7 sm:top-7 lg:left-10 lg:right-10"
     >
       <Link
         to="/"
-        className="hidden min-w-[235px] items-center gap-3 rounded-full border border-white/10 bg-black/60 px-3 py-2 text-white/95 shadow-2xl shadow-black/40 backdrop-blur-xl sm:flex"
+        unstable_viewTransition
+        className="hidden min-w-[235px] items-center gap-3 rounded-full border border-white/10 bg-black/72 px-3 py-2 text-white/95 shadow-2xl shadow-black/40 backdrop-blur-xl sm:flex"
       >
         <img
           src="https://media.base44.com/images/public/69d2dc7d58d5d0f867c281d2/b2ef9950c_Xirako.png"
@@ -38,11 +41,11 @@ export default function Navbar() {
           <p className="font-body text-[0.86rem] font-semibold leading-none">Xirako Studio</p>
           <p className="mt-1 text-[0.66rem] uppercase tracking-[0.16em] text-white/55">Creative Suite</p>
         </div>
-        <span className="ml-auto h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_15px_1px_rgba(44,243,197,0.95)]" />
       </Link>
 
       <Link
         to="/"
+        unstable_viewTransition
         className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/60 backdrop-blur-xl sm:hidden"
         aria-label="Open Xirako home"
       >
@@ -53,29 +56,61 @@ export default function Navbar() {
         />
       </Link>
 
-      <div className="relative ml-auto">
-        <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-black/60 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl sm:flex">
+      <div className="relative ml-auto flex items-center gap-2">
+        <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-black/72 p-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl sm:flex">
           {links.map((link) => (
             <NavLink
               key={link.label}
               to={link.to}
-              className={({ isActive }) => {
-                if (link.highlighted) {
-                  return `rounded-full px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.12em] transition-transform duration-200 ${
-                    isActive
-                      ? "bg-primary text-[#02231d] shadow-[0_0_22px_rgba(44,243,197,0.35)]"
-                      : "bg-primary/90 text-[#03221d] hover:-translate-y-0.5"
-                  }`;
-                }
-
-                return `rounded-full px-4 py-2.5 font-body text-xs font-medium uppercase tracking-[0.12em] transition-colors duration-200 ${
-                  isActive ? "bg-white/10 text-white" : "text-white/72 hover:text-white"
-                }`;
-              }}
+              end={link.to === "/"}
+              unstable_viewTransition
+              className="relative isolate overflow-hidden rounded-full"
             >
-              {link.label}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.span
+                      layoutId="desktop-nav-slide"
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                      className={`absolute inset-0 rounded-full ${
+                        link.highlighted
+                          ? "border border-primary/45 bg-primary/8 shadow-[0_0_0_1px_rgba(44,243,197,0.16),0_0_18px_rgba(44,243,197,0.18)]"
+                          : "border border-white/18 bg-white/[0.04]"
+                      }`}
+                    />
+                  )}
+
+                  {!isActive && link.highlighted && (
+                    <span className="absolute inset-0 rounded-full border border-primary/28 bg-primary/[0.06]" />
+                  )}
+
+                  <span
+                    className={`relative z-10 block px-4 py-2.5 font-body text-xs uppercase tracking-[0.12em] transition-colors duration-200 ${
+                      link.highlighted ? "font-semibold" : "font-medium"
+                    } ${
+                      isActive
+                        ? link.highlighted
+                          ? "text-primary"
+                          : "text-white"
+                        : link.highlighted
+                          ? "text-primary"
+                          : "text-white/80 hover:text-white"
+                    }`}
+                  >
+                    {link.label}
+                  </span>
+                </>
+              )}
             </NavLink>
           ))}
+        </div>
+
+        <div className="hidden sm:block">
+          <AccountMenu />
+        </div>
+
+        <div className="sm:hidden">
+          <AccountMenu mobile />
         </div>
 
         <button
@@ -99,6 +134,8 @@ export default function Navbar() {
                 <NavLink
                   key={link.label}
                   to={link.to}
+                  end={link.to === "/"}
+                  unstable_viewTransition
                   className={({ isActive }) =>
                     link.highlighted
                       ? "rounded-2xl bg-primary px-4 py-2.5 text-center font-body text-xs font-semibold uppercase tracking-[0.12em] text-[#03221d]"
