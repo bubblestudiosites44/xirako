@@ -1,0 +1,35 @@
+# Content Signals
+
+User-agent: *
+Content-Signal: search=yes,ai-input=yes,ai-train=yes
+Allow: /
+
+# Allow major AI crawlers explicitly
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# Other bots (optional restrictions removed so they can crawl)
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CloudflareBrowserRenderingCrawler
+Allow: /
