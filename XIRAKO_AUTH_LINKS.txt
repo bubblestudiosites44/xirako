@@ -58,6 +58,7 @@ if (accessToken && refreshToken) {
 
 NOTES
 -----
-- Keep each callback URL on a xirako.com subdomain.
-- The "Xirako Universal" link is the reusable version. Replace your-app.xirako.com with any future Xirako app.
+- Any HTTPS callback URL now works for Xirako Universal, including external domains like test.base44.app.
+- For local testing, HTTP is allowed only on localhost and 127.0.0.1.
+- The "Xirako Universal" link is the reusable version. Replace your-app.xirako.com with any app URL you control.
 - If a user already has an active Xirako session, the login page will send them back to the target app automatically.

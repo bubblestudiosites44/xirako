@@ -1,8 +1,4 @@
-const ALLOWED_RETURN_HOSTS = [
-  /^([a-z0-9-]+\.)*xirako\.com$/i,
-  /^localhost$/i,
-  /^127\.0\.0\.1$/i,
-];
+const LOCAL_RETURN_HOSTS = [/^localhost$/i, /^127\.0\.0\.1$/i];
 
 export function getRequestedAppName(searchParams) {
   const raw = searchParams.get("app");
@@ -16,9 +12,15 @@ export function isAllowedReturnTo(value) {
 
   try {
     const url = new URL(value);
-    const isAllowedProtocol = url.protocol === "https:" || url.protocol === "http:";
+    if (url.protocol === "https:") {
+      return Boolean(url.hostname);
+    }
 
-    return isAllowedProtocol && ALLOWED_RETURN_HOSTS.some((pattern) => pattern.test(url.hostname));
+    if (url.protocol === "http:") {
+      return LOCAL_RETURN_HOSTS.some((pattern) => pattern.test(url.hostname));
+    }
+
+    return false;
   } catch {
     return false;
   }
