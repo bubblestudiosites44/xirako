@@ -1,10 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, LockKeyhole, Mail, MapPinned, MessagesSquare, Music2, Sparkles, UserRound } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/AuthContext";
+import { buildRelayUrl, getRequestedAppName, isAllowedReturnTo } from "@/lib/xirakoAuth";
 
 const modes = [
   { id: "signin", label: "Sign in" },
@@ -36,7 +37,8 @@ const consumerSurfaces = [
 
 export default function LoginTemplate() {
   const navigate = useNavigate();
-  const { signIn, signUp, clearAuthError, isAuthenticated, isLoadingAuth } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { session, signIn, signUp, clearAuthError, isAuthenticated, isLoadingAuth } = useAuth();
   const [mode, setMode] = React.useState("signin");
   const [form, setForm] = React.useState({
     displayName: "",
@@ -45,16 +47,29 @@ export default function LoginTemplate() {
   });
   const [submitting, setSubmitting] = React.useState(false);
   const [feedback, setFeedback] = React.useState({ type: "", message: "" });
+  const requestedAppName = getRequestedAppName(searchParams);
+  const returnTo = searchParams.get("return_to") || "";
+  const canRelayToApp = isAllowedReturnTo(returnTo);
+  const isAppSpecificLogin = canRelayToApp && requestedAppName !== "Xirako";
 
   React.useEffect(() => {
     clearAuthError();
   }, [clearAuthError, mode]);
 
   React.useEffect(() => {
+    if (!isAuthenticated || !session) {
+      return;
+    }
+
+    if (canRelayToApp) {
+      window.location.assign(buildRelayUrl(returnTo, session, requestedAppName));
+      return;
+    }
+
     if (isAuthenticated) {
       navigate("/", { replace: true, viewTransition: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [canRelayToApp, isAuthenticated, navigate, requestedAppName, returnTo, session]);
 
   const updateField = (field) => (event) => {
     setForm((current) => ({ ...current, [field]: event.target.value }));
@@ -126,17 +141,19 @@ export default function LoginTemplate() {
         <div className="border-b border-white/8 p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-10">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-primary/92">
             <LockKeyhole className="h-3.5 w-3.5" />
-            Xirako Account
+            {isAppSpecificLogin ? `${requestedAppName} sign-in` : "Xirako Account"}
           </span>
 
           <h1 className="mt-7 max-w-2xl font-heading text-[clamp(2.5rem,6vw,5.6rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-white">
-            One login for music, maps, messaging, and AI.
+            {isAppSpecificLogin
+              ? `One Xirako login for ${requestedAppName}.`
+              : "One login for music, maps, messaging, and AI."}
           </h1>
 
           <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-white/72">
-            Xirako works more like a connected consumer ecosystem than a corporate dashboard. Your
-            account carries preferences, saved places, conversations, and AI activity across the
-            services you use every day.
+            {isAppSpecificLogin
+              ? `Sign in here, then we will send the live Xirako session straight back to ${requestedAppName}. Your account follows you across the rest of the Xirako ecosystem too.`
+              : `Xirako works more like a connected consumer ecosystem than a corporate dashboard. Your account carries preferences, saved places, conversations, and AI activity across the services you use every day.`}
           </p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -168,13 +185,19 @@ export default function LoginTemplate() {
                 Account access
               </p>
               <h2 className="mt-3 font-heading text-[2rem] font-semibold leading-none text-white">
-                {mode === "signin" ? "Sign in" : "Create account"}
+                {mode === "signin"
+                  ? isAppSpecificLogin
+                    ? `Sign in to ${requestedAppName}`
+                    : "Sign in"
+                  : isAppSpecificLogin
+                    ? `Create your ${requestedAppName} account`
+                    : "Create account"}
               </h2>
             </div>
 
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-body text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-primary/90">
               <UserRound className="h-3.5 w-3.5" />
-              Supabase
+              Xirako ID
             </div>
           </div>
 
@@ -262,6 +285,12 @@ export default function LoginTemplate() {
               </div>
             )}
 
+            {isAppSpecificLogin && (
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 font-body text-sm text-white/60">
+                After sign-in, you will be sent back to <span className="text-white">{requestedAppName}</span>.
+              </div>
+            )}
+
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
               <button
                 type="button"
@@ -283,8 +312,7 @@ export default function LoginTemplate() {
           </form>
 
           <p className="mt-5 font-body text-xs leading-relaxed text-white/46">
-            Email/password auth is powered by Supabase. New accounts can require email confirmation,
-            depending on your project settings.
+            New accounts may need email confirmation before the first login, depending on your Xirako account settings.
           </p>
         </div>
       </div>

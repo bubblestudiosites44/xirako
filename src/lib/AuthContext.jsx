@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { authClient } from "@/lib/authClient";
 
 const AuthContext = createContext();
 
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
       const {
         data: { session: currentSession },
         error,
-      } = await supabase.auth.getSession();
+      } = await authClient.auth.getSession();
 
       if (error && isMounted) {
         setAuthError({
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, nextSession) => {
+    } = authClient.auth.onAuthStateChange((event, nextSession) => {
       if (!isMounted) {
         return;
       }
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   const signIn = async ({ email, password }) => {
     setAuthError(null);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await authClient.auth.signInWithPassword({
       email,
       password,
     });
@@ -86,12 +86,14 @@ export const AuthProvider = ({ children }) => {
   const signUp = async ({ email, password, displayName }) => {
     setAuthError(null);
 
-    const { data, error } = await supabase.auth.signUp({
+    const redirectUrl =
+      typeof window !== "undefined" ? window.location.href.split("#")[0] : undefined;
+
+    const { data, error } = await authClient.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo:
-          typeof window !== "undefined" ? `${window.location.origin}/login` : undefined,
+        emailRedirectTo: redirectUrl,
         data: {
           display_name: displayName,
         },
@@ -111,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setAuthError(null);
 
-    const { error } = await supabase.auth.signOut();
+    const { error } = await authClient.auth.signOut();
 
     if (error) {
       setAuthError({

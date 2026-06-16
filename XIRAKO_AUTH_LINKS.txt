@@ -1,0 +1,63 @@
+XIRAKO AUTH LINKS
+=================
+
+Paste these URLs into your other Xirako apps as the "Sign in with Xirako" destination.
+Each one sends the user to Xirako.com, lets them sign in once, then returns them to that app.
+
+READY-TO-USE LINKS
+------------------
+1. Xirako Music
+https://xirako.com/login?app=Xirako%20Music&return_to=https%3A%2F%2Fmusic.xirako.com%2Fauth%2Fxirako
+
+2. Xirako Maps
+https://xirako.com/login?app=Xirako%20Maps&return_to=https%3A%2F%2Fmaps.xirako.com%2Fauth%2Fxirako
+
+3. Xirako Classroom
+https://xirako.com/login?app=Xirako%20Classroom&return_to=https%3A%2F%2Fclassroom.xirako.com%2Fauth%2Fxirako
+
+4. Virexa
+https://xirako.com/login?app=Virexa&return_to=https%3A%2F%2Fvirexa.xirako.com%2Fauth%2Fxirako
+
+5. XirAI
+https://xirako.com/login?app=XirAI&return_to=https%3A%2F%2Fai.xirako.com%2Fauth%2Fxirako
+
+6. Dashboard
+https://xirako.com/login?app=Dashboard&return_to=https%3A%2F%2Fdashboard.xirako.com%2Fauth%2Fxirako
+
+7. Xirako Universal
+https://xirako.com/login?app=Xirako%20Universal&return_to=https%3A%2F%2Fyour-app.xirako.com%2Fauth%2Fxirako
+
+HOW TO ADD THIS TO YOUR SITES
+-----------------------------
+1. Add a "Sign in with Xirako" button that links to the correct URL above.
+2. On the target app, create a callback page at /auth/xirako.
+3. On that callback page, read the values from the URL hash:
+   xirako_access_token
+   xirako_refresh_token
+   xirako_expires_at
+   xirako_email
+   xirako_app
+4. Pass the access token and refresh token into your app's session setter.
+5. Clear the hash from the URL, then send the user to your app's home screen or dashboard.
+
+MINIMAL CALLBACK EXAMPLE
+------------------------
+const hash = new URLSearchParams(window.location.hash.slice(1));
+const accessToken = hash.get("xirako_access_token");
+const refreshToken = hash.get("xirako_refresh_token");
+
+if (accessToken && refreshToken) {
+  await authClient.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+
+  window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+  window.location.assign("/");
+}
+
+NOTES
+-----
+- Keep each callback URL on a xirako.com subdomain.
+- The "Xirako Universal" link is the reusable version. Replace your-app.xirako.com with any future Xirako app.
+- If a user already has an active Xirako session, the login page will send them back to the target app automatically.
