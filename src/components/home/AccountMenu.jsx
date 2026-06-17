@@ -2,7 +2,6 @@ import React from "react";
 import { ChevronDown, LogIn, LogOut, Plus, Settings2, UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import AccountSettingsDialog from "@/components/home/AccountSettingsDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +41,6 @@ function getInitials(user) {
 export default function AccountMenu({ mobile = false }) {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
   const handleLogin = () => {
     navigate("/login", { viewTransition: true });
@@ -50,6 +48,10 @@ export default function AccountMenu({ mobile = false }) {
 
   const handleCreateAccount = () => {
     navigate("/login", { viewTransition: true });
+  };
+
+  const handleOpenAccount = () => {
+    navigate("/account", { viewTransition: true });
   };
 
   return (
@@ -106,7 +108,7 @@ export default function AccountMenu({ mobile = false }) {
           {isAuthenticated ? (
             <>
               <DropdownMenuItem
-                onSelect={() => setTimeout(() => setIsSettingsOpen(true), 0)}
+                onSelect={handleOpenAccount}
                 className="rounded-2xl px-3 py-3 font-body text-sm text-white/86 focus:bg-white/10 focus:text-white"
               >
                 <Settings2 className="h-4 w-4" />
@@ -140,8 +142,6 @@ export default function AccountMenu({ mobile = false }) {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <AccountSettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </>
   );
 }
