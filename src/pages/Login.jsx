@@ -44,9 +44,9 @@ export default function Login() {
         <div className="texture-grain absolute inset-0" />
         <LoginBackdrop />
 
-        <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
-          <div className="w-full max-w-[84rem] rounded-[2.8rem] border border-white/85 bg-white/[0.03] p-[0.38rem] shadow-[0_45px_140px_rgba(0,0,0,0.62)]">
-            <div className="relative overflow-hidden rounded-[2.45rem] bg-[linear-gradient(145deg,rgba(2,8,9,0.98),rgba(5,12,13,0.96))] px-3 py-6 sm:px-5 sm:py-8 lg:px-8 lg:py-10">
+        <div className="relative z-10 flex min-h-screen items-center justify-center px-3 py-3 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+          <div className="w-full max-w-[84rem] rounded-[2rem] border border-white/80 bg-white/[0.03] p-[0.3rem] shadow-[0_45px_140px_rgba(0,0,0,0.62)] sm:rounded-[2.8rem] sm:border-white/85 sm:p-[0.38rem]">
+            <div className="relative overflow-hidden rounded-[1.72rem] bg-[linear-gradient(145deg,rgba(2,8,9,0.98),rgba(5,12,13,0.96))] px-2.5 py-4 sm:rounded-[2.45rem] sm:px-5 sm:py-8 lg:px-8 lg:py-10">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(44,243,197,0.12),transparent_26%),radial-gradient(circle_at_85%_24%,rgba(153,251,255,0.14),transparent_24%),radial-gradient(circle_at_10%_90%,rgba(248,255,252,0.16),transparent_18%),radial-gradient(circle_at_88%_88%,rgba(0,245,228,0.16),transparent_22%)]" />
               <div className="relative z-10 mx-auto flex w-full max-w-[78rem] items-center justify-center">
                 <LoginTemplate />
@@ -61,7 +61,7 @@ export default function Login() {
   return (
     <SitePageLayout>
       <section className="relative">
-        <div className="hero-frame texture-grain relative isolate min-h-[90vh] overflow-hidden px-5 pb-10 pt-24 sm:px-9 sm:pt-28 lg:px-14 lg:pt-32">
+        <div className="hero-frame texture-grain relative isolate min-h-[90vh] overflow-hidden px-4 pb-6 pt-20 sm:px-9 sm:pb-10 sm:pt-28 lg:px-14 lg:pt-32">
           <Navbar />
 
           <LoginBackdrop />

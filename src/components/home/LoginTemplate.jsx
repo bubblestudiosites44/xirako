@@ -133,43 +133,43 @@ export default function LoginTemplate() {
       initial={{ opacity: 0, y: 22 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.25 }}
-      className="relative w-full max-w-[76rem] overflow-hidden rounded-[2.4rem] border border-white/10 bg-[linear-gradient(145deg,rgba(4,10,11,0.92),rgba(7,16,17,0.98))] shadow-[0_28px_90px_rgba(0,0,0,0.4)]"
+      className="relative w-full max-w-[76rem] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(145deg,rgba(4,10,11,0.92),rgba(7,16,17,0.98))] shadow-[0_28px_90px_rgba(0,0,0,0.4)] sm:rounded-[2.4rem]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(44,243,197,0.14),transparent_28%),radial-gradient(circle_at_82%_74%,rgba(80,219,243,0.12),transparent_28%)]" />
 
       <div className="relative grid lg:grid-cols-[minmax(0,1.02fr)_minmax(23rem,29rem)]">
-        <div className="border-b border-white/8 p-6 sm:p-8 lg:border-b-0 lg:border-r lg:p-10">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-primary/92">
+        <div className="order-2 p-5 pt-6 sm:p-8 lg:order-1 lg:p-10">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-2 font-body text-[0.67rem] font-semibold uppercase tracking-[0.16em] text-primary/92 sm:px-4 sm:text-[0.72rem]">
             <LockKeyhole className="h-3.5 w-3.5" />
             {isAppSpecificLogin ? `${requestedAppName} sign-in` : "Xirako Account"}
           </span>
 
-          <h1 className="mt-7 max-w-2xl font-heading text-[clamp(2.5rem,6vw,5.6rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-white">
+          <h1 className="mt-6 max-w-[12ch] font-heading text-[clamp(2.1rem,13vw,3.9rem)] font-semibold leading-[0.92] tracking-[-0.04em] text-white sm:mt-7 sm:max-w-2xl sm:text-[clamp(2.5rem,6vw,5.6rem)] sm:leading-[0.95]">
             {isAppSpecificLogin
               ? `One Xirako login for ${requestedAppName}.`
               : "One login for music, maps, messaging, and AI."}
           </h1>
 
-          <p className="mt-5 max-w-2xl font-body text-base leading-relaxed text-white/72">
+          <p className="mt-4 max-w-2xl font-body text-[0.98rem] leading-relaxed text-white/72 sm:mt-5 sm:text-base">
             {isAppSpecificLogin
               ? `Sign in here, then we will send the live Xirako session straight back to ${requestedAppName}. Your account follows you across the rest of the Xirako ecosystem too.`
               : `Xirako works more like a connected consumer ecosystem than a corporate dashboard. Your account carries preferences, saved places, conversations, and AI activity across the services you use every day.`}
           </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div className="mt-7 grid gap-3 min-[380px]:grid-cols-2 sm:mt-8 sm:grid-cols-2">
             {consumerSurfaces.map((surface) => {
               const Icon = surface.icon;
 
               return (
                 <article
                   key={surface.title}
-                  className="rounded-[1.5rem] border border-white/10 bg-black/20 p-4 backdrop-blur-xl"
+                  className="rounded-[1.35rem] border border-white/10 bg-black/20 p-3.5 backdrop-blur-xl sm:rounded-[1.5rem] sm:p-4"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-primary">
-                    <Icon className="h-5 w-5" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-[1.1rem] border border-white/10 bg-white/[0.04] text-primary sm:h-11 sm:w-11 sm:rounded-2xl">
+                    <Icon className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                   </div>
-                  <h2 className="mt-4 font-heading text-lg font-semibold text-white">{surface.title}</h2>
-                  <p className="mt-2 font-body text-sm leading-relaxed text-white/62">
+                  <h2 className="mt-3 font-heading text-[1.02rem] font-semibold text-white sm:mt-4 sm:text-lg">{surface.title}</h2>
+                  <p className="mt-2 font-body text-[0.8rem] leading-relaxed text-white/62 sm:text-sm">
                     {surface.description}
                   </p>
                 </article>
@@ -178,13 +178,13 @@ export default function LoginTemplate() {
           </div>
         </div>
 
-        <div className="p-6 sm:p-8 lg:p-10">
-          <div className="flex items-center justify-between gap-4">
+        <div className="order-1 border-b border-white/8 p-5 sm:p-8 lg:order-2 lg:border-b-0 lg:border-l lg:border-white/8 lg:p-10">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div>
               <p className="font-body text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/46">
                 Account access
               </p>
-              <h2 className="mt-3 font-heading text-[2rem] font-semibold leading-none text-white">
+              <h2 className="mt-2.5 max-w-[10ch] font-heading text-[1.9rem] font-semibold leading-[0.92] text-white sm:mt-3 sm:max-w-none sm:text-[2rem] sm:leading-none">
                 {mode === "signin"
                   ? isAppSpecificLogin
                     ? `Sign in to ${requestedAppName}`
@@ -195,19 +195,19 @@ export default function LoginTemplate() {
               </h2>
             </div>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-body text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-primary/90">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-body text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-primary/90 sm:text-[0.66rem]">
               <UserRound className="h-3.5 w-3.5" />
               Xirako ID
             </div>
           </div>
 
-          <div className="mt-6 inline-flex rounded-full border border-white/10 bg-black/25 p-1">
+          <div className="mt-5 inline-flex w-full rounded-full border border-white/10 bg-black/25 p-1 sm:mt-6">
             {modes.map((option) => (
               <button
                 key={option.id}
                 type="button"
                 onClick={() => setMode(option.id)}
-                className="relative rounded-full px-4 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.14em] text-white/72"
+                className="relative flex-1 rounded-full px-4 py-2.5 text-center font-body text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-white/72 sm:text-xs"
               >
                 {mode === option.id && (
                   <motion.span
@@ -221,7 +221,7 @@ export default function LoginTemplate() {
             ))}
           </div>
 
-          <form onSubmit={submitAuth} className="mt-6 space-y-4">
+          <form onSubmit={submitAuth} className="mt-5 space-y-4 sm:mt-6">
             {mode === "signup" && (
               <label className="block">
                 <span className="mb-2 block font-body text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/48">
@@ -232,7 +232,7 @@ export default function LoginTemplate() {
                   value={form.displayName}
                   onChange={updateField("displayName")}
                   placeholder="What should people call you?"
-                  className="h-12 rounded-2xl border-white/10 bg-white/[0.04] px-4 text-white placeholder:text-white/28 focus-visible:ring-primary"
+                  className="h-11 rounded-xl border-white/10 bg-white/[0.04] px-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
                   required={mode === "signup"}
                 />
               </label>
@@ -249,7 +249,7 @@ export default function LoginTemplate() {
                   value={form.email}
                   onChange={updateField("email")}
                   placeholder="name@xirako.com"
-                  className="h-12 rounded-2xl border-white/10 bg-white/[0.04] pl-11 pr-4 text-white placeholder:text-white/28 focus-visible:ring-primary"
+                  className="h-11 rounded-xl border-white/10 bg-white/[0.04] pl-11 pr-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
                   required
                 />
               </div>
@@ -266,7 +266,7 @@ export default function LoginTemplate() {
                   value={form.password}
                   onChange={updateField("password")}
                   placeholder={mode === "signup" ? "Create a password" : "Enter your password"}
-                  className="h-12 rounded-2xl border-white/10 bg-white/[0.04] pl-11 pr-4 text-white placeholder:text-white/28 focus-visible:ring-primary"
+                  className="h-11 rounded-xl border-white/10 bg-white/[0.04] pl-11 pr-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
                   minLength={8}
                   required
                 />
@@ -286,16 +286,16 @@ export default function LoginTemplate() {
             )}
 
             {isAppSpecificLogin && (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 font-body text-sm text-white/60">
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 font-body text-sm text-white/60 sm:rounded-2xl">
                 After sign-in, you will be sent back to <span className="text-white">{requestedAppName}</span>.
               </div>
             )}
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex flex-col-reverse items-stretch gap-3 pt-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <button
                 type="button"
                 onClick={() => setMode((current) => (current === "signin" ? "signup" : "signin"))}
-                className="font-body text-sm font-medium text-primary transition-colors hover:text-white"
+                className="text-left font-body text-sm font-medium text-primary transition-colors hover:text-white"
               >
                 {mode === "signin" ? "Need an account?" : "Already have an account?"}
               </button>
@@ -303,7 +303,7 @@ export default function LoginTemplate() {
               <Button
                 type="submit"
                 disabled={submitting || isLoadingAuth}
-                className="h-11 rounded-full bg-primary px-6 text-[#02251f] shadow-none hover:bg-primary/90"
+                className="h-11 w-full justify-center rounded-full bg-primary px-6 text-[#02251f] shadow-none hover:bg-primary/90 sm:w-auto"
               >
                 {submitting ? "Working..." : mode === "signin" ? "Sign in" : "Create account"}
                 <ArrowRight className="h-4 w-4" />
