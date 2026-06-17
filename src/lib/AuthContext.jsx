@@ -10,6 +10,12 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authError, setAuthError] = useState(null);
 
+  const applyUserUpdate = (nextUser) => {
+    setUser(nextUser ?? null);
+    setSession((current) => (current ? { ...current, user: nextUser ?? null } : current));
+    setIsAuthenticated(Boolean(nextUser));
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -125,6 +131,42 @@ export const AuthProvider = ({ children }) => {
     return { error };
   };
 
+  const updateProfile = async ({ displayName, password }) => {
+    setAuthError(null);
+
+    const payload = {};
+    const nextDisplayName = displayName?.trim();
+
+    if (nextDisplayName) {
+      payload.data = {
+        display_name: nextDisplayName,
+      };
+    }
+
+    if (password) {
+      payload.password = password;
+    }
+
+    if (!Object.keys(payload).length) {
+      return { data: null, error: null };
+    }
+
+    const { data, error } = await authClient.auth.updateUser(payload);
+
+    if (error) {
+      setAuthError({
+        type: "profile_update",
+        message: error.message,
+      });
+    }
+
+    if (data?.user) {
+      applyUserUpdate(data.user);
+    }
+
+    return { data, error };
+  };
+
   const navigateToLogin = () => {
     if (typeof window !== "undefined") {
       window.location.assign("/login");
@@ -146,6 +188,7 @@ export const AuthProvider = ({ children }) => {
       signIn,
       signUp,
       logout,
+      updateProfile,
       navigateToLogin,
       clearAuthError,
     }}
