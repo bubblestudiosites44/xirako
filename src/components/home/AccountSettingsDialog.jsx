@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader2, ShieldAlert, Trash2, UserRound } from "lucide-react";
+import { KeyRound, Loader2, ShieldAlert, Trash2, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,11 +22,15 @@ function getDisplayName(user) {
 }
 
 export default function AccountSettingsDialog({ open, onOpenChange }) {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, resetPassword } = useAuth();
   const { toast } = useToast();
   const [displayName, setDisplayName] = React.useState("");
+  const [isPasswordFormOpen, setIsPasswordFormOpen] = React.useState(false);
+  const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
-  const [saving, setSaving] = React.useState(false);
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [savingProfile, setSavingProfile] = React.useState(false);
+  const [savingPassword, setSavingPassword] = React.useState(false);
 
   const currentDisplayName = getDisplayName(user);
 
@@ -36,10 +40,13 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
     }
 
     setDisplayName(currentDisplayName);
+    setIsPasswordFormOpen(false);
+    setCurrentPassword("");
     setNewPassword("");
+    setConfirmPassword("");
   }, [currentDisplayName, open]);
 
-  const handleSave = async (event) => {
+  const handleProfileSave = async (event) => {
     event.preventDefault();
 
     const trimmedName = displayName.trim();
@@ -53,30 +60,18 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
       return;
     }
 
-    if (newPassword && newPassword.length < 8) {
-      toast({
-        title: "Password too short",
-        description: "Use at least 8 characters for a new password.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (trimmedName === currentDisplayName && !newPassword) {
+    if (trimmedName === currentDisplayName) {
       toast({
         title: "Nothing to save",
-        description: "Change your display name or add a new password first.",
+        description: "Change your display name first.",
       });
       return;
     }
 
-    setSaving(true);
+    setSavingProfile(true);
 
     try {
-      const { error } = await updateProfile({
-        displayName: trimmedName,
-        password: newPassword || undefined,
-      });
+      const { error } = await updateProfile({ displayName: trimmedName });
 
       if (error) {
         toast({
@@ -89,11 +84,79 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
 
       toast({
         title: "Account updated",
-        description: "Your Xirako profile changes are now live.",
+        description: "Your display name is now live across Xirako.",
       });
-      onOpenChange(false);
     } finally {
-      setSaving(false);
+      setSavingProfile(false);
+    }
+  };
+
+  const handlePasswordReset = async (event) => {
+    event.preventDefault();
+
+    if (!currentPassword) {
+      toast({
+        title: "Current password required",
+        description: "Enter your current password before choosing a new one.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast({
+        title: "Password too short",
+        description: "Use at least 8 characters for your new password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Passwords do not match",
+        description: "Double-check the new password and confirmation fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (currentPassword === newPassword) {
+      toast({
+        title: "Choose a different password",
+        description: "Your new password should be different from the current one.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSavingPassword(true);
+
+    try {
+      const { error } = await resetPassword({
+        currentPassword,
+        newPassword,
+      });
+
+      if (error) {
+        toast({
+          title: "Could not reset password",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Password updated",
+        description: "Your Xirako password has been reset successfully.",
+      });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setIsPasswordFormOpen(false);
+    } finally {
+      setSavingPassword(false);
     }
   };
 
@@ -115,8 +178,11 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-5 px-5 py-5 sm:px-6 sm:py-6">
-          <section className="rounded-[1.35rem] border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <div className="space-y-5 px-5 py-5 sm:px-6 sm:py-6">
+          <form
+            onSubmit={handleProfileSave}
+            className="rounded-[1.35rem] border border-white/10 bg-white/[0.03] p-4 sm:p-5"
+          >
             <div className="space-y-4">
               <label className="block">
                 <span className="mb-2 block font-body text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/48">
@@ -143,20 +209,96 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
                   className="h-11 rounded-xl border-white/10 bg-white/[0.03] px-4 text-white/56 disabled:cursor-not-allowed disabled:opacity-100 sm:h-12 sm:rounded-2xl"
                 />
               </label>
-
-              <label className="block">
-                <span className="mb-2 block font-body text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/48">
-                  New password
-                </span>
-                <Input
-                  type="password"
-                  value={newPassword}
-                  onChange={(event) => setNewPassword(event.target.value)}
-                  placeholder="Leave blank to keep your current password"
-                  className="h-11 rounded-xl border-white/10 bg-white/[0.04] px-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
-                />
-              </label>
             </div>
+
+            <div className="mt-5 flex justify-end">
+              <Button
+                type="submit"
+                disabled={savingProfile}
+                className="h-11 rounded-full bg-primary px-6 text-[#02251f] hover:bg-primary/90"
+              >
+                {savingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                {savingProfile ? "Saving..." : "Save profile"}
+              </Button>
+            </div>
+          </form>
+
+          <section className="rounded-[1.35rem] border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-body text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-primary/92">
+                  <KeyRound className="h-3.5 w-3.5" />
+                  Password
+                </div>
+                <h3 className="mt-3 font-heading text-lg font-semibold text-white">Reset password</h3>
+                <p className="mt-2 max-w-[32ch] font-body text-sm leading-relaxed text-white/60">
+                  Verify your current password, then choose a fresh one for your Xirako account.
+                </p>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsPasswordFormOpen((current) => !current)}
+                className="h-10 rounded-full border-white/10 bg-white/[0.03] px-5 text-white hover:bg-white/[0.08] hover:text-white"
+              >
+                {isPasswordFormOpen ? "Cancel" : "Reset password"}
+              </Button>
+            </div>
+
+            {isPasswordFormOpen && (
+              <form onSubmit={handlePasswordReset} className="mt-5 space-y-4 border-t border-white/8 pt-5">
+                <label className="block">
+                  <span className="mb-2 block font-body text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/48">
+                    Current password
+                  </span>
+                  <Input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(event) => setCurrentPassword(event.target.value)}
+                    placeholder="Enter your current password"
+                    className="h-11 rounded-xl border-white/10 bg-white/[0.04] px-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block font-body text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/48">
+                    New password
+                  </span>
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    placeholder="Choose a new password"
+                    className="h-11 rounded-xl border-white/10 bg-white/[0.04] px-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block font-body text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/48">
+                    Confirm new password
+                  </span>
+                  <Input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    placeholder="Re-enter your new password"
+                    className="h-11 rounded-xl border-white/10 bg-white/[0.04] px-4 text-white placeholder:text-white/28 focus-visible:ring-primary sm:h-12 sm:rounded-2xl"
+                  />
+                </label>
+
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    disabled={savingPassword}
+                    className="h-11 rounded-full bg-primary px-6 text-[#02251f] hover:bg-primary/90"
+                  >
+                    {savingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                    {savingPassword ? "Updating..." : "Update password"}
+                  </Button>
+                </div>
+              </form>
+            )}
           </section>
 
           <section className="rounded-[1.35rem] border border-red-500/18 bg-red-500/[0.06] p-4 sm:p-5">
@@ -170,16 +312,8 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
                   Account deletion belongs behind a secure server-side action, so it is not exposed in
                   the browser yet.
                 </p>
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="font-body text-xs leading-relaxed text-white/46">
-                    This section is ready for a proper deletion endpoint when you want to wire one in.
-                  </p>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    disabled
-                    className="h-10 rounded-full px-5 disabled:opacity-45"
-                  >
+                <div className="mt-4 flex justify-end">
+                  <Button type="button" variant="destructive" disabled className="h-10 rounded-full px-5 disabled:opacity-45">
                     <Trash2 className="h-4 w-4" />
                     Delete account
                   </Button>
@@ -197,16 +331,8 @@ export default function AccountSettingsDialog({ open, onOpenChange }) {
             >
               Close
             </Button>
-            <Button
-              type="submit"
-              disabled={saving}
-              className="h-11 rounded-full bg-primary px-6 text-[#02251f] hover:bg-primary/90"
-            >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              {saving ? "Saving..." : "Save changes"}
-            </Button>
           </div>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

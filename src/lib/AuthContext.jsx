@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
     return { error };
   };
 
-  const updateProfile = async ({ displayName, password }) => {
+  const updateProfile = async ({ displayName }) => {
     setAuthError(null);
 
     const payload = {};
@@ -143,10 +143,6 @@ export const AuthProvider = ({ children }) => {
       };
     }
 
-    if (password) {
-      payload.password = password;
-    }
-
     if (!Object.keys(payload).length) {
       return { data: null, error: null };
     }
@@ -156,6 +152,50 @@ export const AuthProvider = ({ children }) => {
     if (error) {
       setAuthError({
         type: "profile_update",
+        message: error.message,
+      });
+    }
+
+    if (data?.user) {
+      applyUserUpdate(data.user);
+    }
+
+    return { data, error };
+  };
+
+  const resetPassword = async ({ currentPassword, newPassword }) => {
+    setAuthError(null);
+
+    if (!user?.email) {
+      const error = new Error("We could not verify your account email for this password reset.");
+      setAuthError({
+        type: "password_reset",
+        message: error.message,
+      });
+      return { data: null, error };
+    }
+
+    const { error: verifyError } = await authClient.auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    });
+
+    if (verifyError) {
+      const error = new Error("Your current password is incorrect.");
+      setAuthError({
+        type: "password_reset",
+        message: error.message,
+      });
+      return { data: null, error };
+    }
+
+    const { data, error } = await authClient.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      setAuthError({
+        type: "password_reset",
         message: error.message,
       });
     }
@@ -189,6 +229,7 @@ export const AuthProvider = ({ children }) => {
       signUp,
       logout,
       updateProfile,
+      resetPassword,
       navigateToLogin,
       clearAuthError,
     }}
